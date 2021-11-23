@@ -1,0 +1,45 @@
+---
+title: "Puntos PNMA"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(leaflet.extras)
+
+df <- read.csv("C:\\Users\\Kevin\\OneDrive - ucr.ac.cr\\Repositorios\\PNMA\\Resenas playa Manuel en.csv", as.is=T)
+
+
+#Elimina filas sin información a partir de una columna
+df = df[!(is.na(df$Latitud) | df$Latitud=="N/A" | df$Latitud==""), ]
+
+points = st_as_sf(df, coords = c("Longitud","Latitud"), crs = 4326)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Mapa
+
+```{r}
+
+leaflet() %>%
+  fitBounds(lng1 = 180, lng2 = -180, lat1 = 90, lat2 = -90) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik, group = "Open StreeT Map") %>%
+  addTiles(urlTemplate ="https://mts1.google.com/vt/lyrs=s&hl=en&src=app&x={x}&y={y}&z={z}&s=G", 
+           attribution = 'Google', group = "Google Maps") %>%
+  addMarkers(data = points, group = "Puntos") %>%
+  addLayersControl(baseGroups = c("OpenStreetMap", "Google Maps"), 
+                   overlayGroups = c("Puntos"), options = layersControlOptions(collapsed = TRUE)) %>%
+  addScaleBar()%>%
+  addMiniMap(toggleDisplay = TRUE, position = "bottomleft", tiles = providers$OpenStreetMap.Mapnik)
+
+#, popup = paste("Opinón: ", points$Opinion, "<br>", "Ubicación: ", points$Locación, "<br>")
+```
+
