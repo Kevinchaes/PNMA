@@ -3,7 +3,7 @@ title: "Puntos PNMA"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
-    vertical_layout: scroll
+    vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +23,7 @@ points = st_as_sf(df, coords = c("Longitud","Latitud"), crs = 4326)
 
 ```
 
-Row {data-width=650}
+Row 
 -----------------------------------------------------------------------
 
 ### Mapa
